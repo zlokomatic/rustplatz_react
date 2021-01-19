@@ -1,0 +1,6 @@
+import {SortedTeam} from "./team";
+
+export type FetchDataResponse = {
+    teams: SortedTeam[],
+    totalViewers: number
+}

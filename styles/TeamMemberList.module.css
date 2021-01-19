@@ -1,0 +1,37 @@
+.list_move {
+    transition: 1s ease transform;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.separator {
+    @apply block text-lg mt-3 uppercase transition-opacity opacity-0 duration-500;
+}
+
+.separator[data-show="true"][data-was-shown="false"] {
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-direction: normal;
+    animation-fill-mode: both;
+    animation-name: fade-in;
+}
+.separator[data-show="false"][data-was-shown="true"] {
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-direction: reverse;
+    animation-fill-mode: both;
+    animation-name: fade-in;
+}
+.separator[data-show="true"][data-was-shown="true"] {
+    opacity: 1;
+}
+.separator[data-show="false"][data-was-shown="false"] {
+    opacity: 0;
+}

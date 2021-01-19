@@ -1,0 +1,30 @@
+.project_logo {
+    filter: brightness(140%);
+    color: #999999;
+    font-size: 5rem;
+}
+.project_logo__rust-logo {
+    width: 300px;
+}
+.project_logo__separator {
+    background: #999999;
+    width: 300px;
+}
+@screen md {
+    .project_logo {
+        transform: translateX(-5px);
+        font-size: 5rem;
+    }
+    .project_logo__separator {
+        @apply w-6;
+    }
+}
+@screen xl {
+    .project_logo {
+        transform: translateX(40px);
+        font-size: 8rem;
+    }
+    .project_logo__rust-logo {
+        width: 400px;
+    }
+}

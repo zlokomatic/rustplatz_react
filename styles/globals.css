@@ -1,16 +1,38 @@
-html,
+.slide-y {
+    transition: 1s ease-out;
+    transition-property: opacity, max-height;
+}
+
+.slide-y-enter-done, .slide-y-exit {
+    max-height: 145px;
+}
+
+.slide-y-enter,
+.slide-y-exit-done {
+    opacity: 0;
+    max-height: 0;
+}
+
+::selection {
+    background: rgba(242, 92, 120, 0.7);
+}
+
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    @apply bg-gray-900 text-gray-200 overflow-x-hidden;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    @apply text-green-400;
 }
 
-* {
-  box-sizing: border-box;
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+}
+
+.default_border {
+    @apply border-4 border-dashed border-red-500;
+}
+
+.heading {
+    @apply text-3xl md:text-5xl font-bold mb-5;
 }
