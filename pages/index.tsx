@@ -50,7 +50,7 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
                 }
                 <section className="max-w-7xl w-full mx-auto">
                     <h1 className="heading">Informationen</h1>
-                    <ul className="pl-4">
+                    <ul className="list-disc pl-4">
                         <li>Der Server ist täglich von 15 Uhr bis 3 Uhr (morgens) online.</li>
                         <li>Andere Spieler zu töten ist nur mit Role-Play erlaubt, <b>außer</b> in den sog. KOS-Zonen.</li>
                         <li>Um mitspielen zu können, muss ein Streamer von einem der Teilnehmer eingeladen werden.</li>
