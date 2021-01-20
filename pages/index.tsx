@@ -32,10 +32,7 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
                     Rust-Streamerserver von Bonjwa, RocketBeans und Dhalucard
                 </div>
                 <div className="text-center mt-4 text-base">
-                    <p>Seite von <a href="https://twitter.com/moritz_ruth">@moritz_ruth</a>.</p>
-                    <p className="text">
-                        Schreibe mir gerne eine Twitter-Nachricht, wenn du ein Anliegen hast.
-                    </p>
+                    Diese Seite basiert auf dem original von <a href="https://twitter.com/moritz_ruth">@moritz_ruth</a>
                 </div>
             </header>
             <main className="p-5 text-lg space-y-8">
@@ -79,6 +76,10 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
                     </p>
                 </section>
             </main>
+            <footer className="flex flex-col text-center px-4 py-2">
+                <span>Inoffizielle Seite.</span>
+                <a href="https://github.com/moritzruth/rustplatz">Source Code</a>
+            </footer>
         </>);
 };
 
