@@ -1,9 +1,11 @@
-import {ApiClient} from "twitch";
+import {ApiClient, HelixClip} from "twitch";
 import {ClientCredentialsAuthProvider} from "twitch-auth";
 import {ApiTeam, Team} from "../types/team";
 import {CustomStreamer, isSimpleStreamer} from "../types/streamer";
 import {FetchDataResponse} from "../types/response";
 import cacheData from "memory-cache";
+import dayjs from 'dayjs'
+import {Clip} from "../types/clip";
 
 const RUST_GAME_ID = 263490
 
@@ -15,6 +17,8 @@ const BATTLE_METRICS_ENDPOINT = "https://api.battlemetrics.com/servers/9697587" 
 const twitchClient = new ApiClient({
     authProvider: new ClientCredentialsAuthProvider(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET)
 })
+
+let twitchUserIds = {};
 
 async function getRustData() {
     const resp = await fetch(
@@ -31,6 +35,49 @@ async function getRustData() {
         serverStatus,
         onlinePlayers
     }
+}
+
+export async function getClips(userName: string) {
+    if(!twitchUserIds[userName]) {
+        const user = await twitchClient.helix.users.getUserByName(userName)
+        if (!user) {
+            return [];
+        }
+
+        twitchUserIds[userName] = user.id;
+    }
+
+    const RFC_FORMAT = 'YYYY-MM-DDTHH:mm:ssZ';
+
+    const request = twitchClient.helix.clips.getClipsForBroadcasterPaginated(twitchUserIds[userName], {
+        startDate: dayjs('2021-01-15').format(RFC_FORMAT),
+        endDate: dayjs().format(RFC_FORMAT),
+        limit: 100
+    })
+
+    let page: HelixClip[];
+    const result: Clip[] = [];
+
+    while ((page = await request.getNext()).length) {
+        let rustClips = page.filter((clip) => parseInt(clip.gameId) == RUST_GAME_ID).map((clip): Clip => {
+            return {
+                id: clip.id,
+                url: clip.url,
+                creationDate: dayjs(clip.creationDate).format(),
+                creatorDisplayName: clip.creatorDisplayName,
+                thumbnailUrl: clip.thumbnailUrl,
+                title: clip.title,
+                views: clip.views
+            };
+        });
+
+        result.push(...rustClips);
+    }
+
+    return result.filter((elem, index, self) => self.findIndex(
+        (t) => {
+            return (t.id === elem.id)
+        }) === index);
 }
 
 async function getActiveStreamsAndTotalViewers(channelNames) {
@@ -105,6 +152,12 @@ export async function fetchLiveData(): Promise<FetchDataResponse> {
     }
 }
 
+async function fetchLiveClipData(streamer) {
+    const clips = await getClips(streamer);
+
+    return clips;
+}
+
 export async function fetchData() {
     const key = 'FetchDataResponse';
     const value = cacheData.get(key);
@@ -113,6 +166,18 @@ export async function fetchData() {
     }
 
     const data = await fetchLiveData();
+    cacheData.put(key, data, 60 * 1000);
+    return data;
+}
+
+export async function fetchClipData(streamer) {
+    const key = 'FetchClipDataResponse';
+    const value = cacheData.get(key);
+    if (value) {
+        return value;
+    }
+
+    const data = await fetchLiveClipData(streamer);
     cacheData.put(key, data, 60 * 1000);
     return data;
 }

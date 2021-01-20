@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/react-transition-group": "^4.4.0",
+    "dayjs": "^1.10.3",
     "memory-cache": "^0.2.0",
     "next": "10.0.5",
     "react": "17.0.1",
