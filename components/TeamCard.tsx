@@ -2,8 +2,7 @@ import {SortedTeam} from "../types/team";
 import classNames from 'classnames';
 import TeamMemberList from "./TeamMemberList";
 
-import styles from '../styles/TeamsList.module.css';
-
+import styles from '../styles/TeamCard.module.css';
 
 type Props = {
     team: SortedTeam

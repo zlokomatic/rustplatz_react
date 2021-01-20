@@ -3,14 +3,12 @@ import TeamCard from "./TeamCard";
 import React from "react";
 import classNames from 'classnames';
 
-import styles from '../styles/TeamsList.module.css';
-
 type Props = {
     teams: SortedTeam[]
 }
 
 const TeamsList: React.FunctionComponent<Props> = ({teams}) => (
-    <div className={classNames("space-y-8", styles.teams_list)}>
+    <div className={classNames("grid grid-cols-1 md:grid-cols-4 gap-4")}>
         {
             teams.map((team, index) => <TeamCard team={team} key={`team-${team.name}-${index}`}/>)
         }
