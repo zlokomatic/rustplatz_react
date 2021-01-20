@@ -171,14 +171,14 @@ export async function fetchData() {
 }
 
 export async function fetchClipData(streamer) {
-    const key = 'FetchClipDataResponse';
+    const key = `FetchClipDataResponse${streamer}`;
     const value = cacheData.get(key);
     if (value) {
         return value;
     }
 
     const data = await fetchLiveClipData(streamer);
-    cacheData.put(key, data, 60 * 1000);
+    cacheData.put(key, data, 600 * 1000);
     return data;
 }
 
