@@ -10,19 +10,27 @@ const RUST_GAME_ID = 263490
 const {TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, BATTLE_METRICS_TOKEN} = process.env
 
 const BATTLE_METRICS_ENDPOINT = "https://api.battlemetrics.com/servers/9697587" +
-    "?include=player&fields%5Bserver%5D=&relations%5Bserver%5D=&fields%5Bplayer%5D=name&relations%5Bplayer%5D="
+    "?include=player&fields%5Bserver%5D=status&relations%5Bserver%5D=&fields%5Bplayer%5D=name&relations%5Bplayer%5D="
 
 const twitchClient = new ApiClient({
     authProvider: new ClientCredentialsAuthProvider(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET)
 })
 
-async function getOnlinePlayers() {
-    const data = await fetch(
+async function getRustData() {
+    const resp = await fetch(
         BATTLE_METRICS_ENDPOINT,
         {headers: {Authorization: `Bearer ${BATTLE_METRICS_TOKEN}`}}
-    ).then(response => response.json())
+    );
 
-    return new Set(data.included.map(player => player.attributes.name))
+    const data = await resp.json();
+
+    const serverStatus = data.data.attributes.status;
+    const onlinePlayers = new Set(data.included.map(player => player.attributes.name));
+
+    return {
+        serverStatus,
+        onlinePlayers
+    }
 }
 
 async function getActiveStreamsAndTotalViewers(channelNames) {
@@ -63,7 +71,7 @@ async function getTeams(): Promise<Team[]> {
 }
 
 export async function fetchLiveData(): Promise<FetchDataResponse> {
-    const onlinePlayers = await getOnlinePlayers();
+    const {onlinePlayers, serverStatus} = await getRustData();
     const rawTeams = await getTeams();
 
     const onlineStreams = rawTeams
@@ -73,7 +81,8 @@ export async function fetchLiveData(): Promise<FetchDataResponse> {
 
     if (onlineStreams.length === 0) return {
         teams: rawTeams.map(team => ({name: team.name, online: [], offline: team.members})),
-        totalViewers: 0
+        totalViewers: 0,
+        serverStatus: serverStatus
     }
 
     const {streams, totalViewers} = await getActiveStreamsAndTotalViewers(onlineStreams)
@@ -91,7 +100,8 @@ export async function fetchLiveData(): Promise<FetchDataResponse> {
 
     return {
         teams,
-        totalViewers
+        totalViewers,
+        serverStatus
     }
 }
 

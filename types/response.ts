@@ -2,5 +2,6 @@ import {SortedTeam} from "./team";
 
 export type FetchDataResponse = {
     teams: SortedTeam[],
-    totalViewers: number
+    totalViewers: number,
+    serverStatus: 'online' | 'offline'
 }

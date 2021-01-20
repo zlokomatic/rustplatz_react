@@ -18,10 +18,11 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
 
     const [inProp, setInProp] = useState(false);
 
-    const {teams, totalViewers} = data;
+    const {teams, totalViewers, serverStatus} = data;
+    const showViewers = totalViewers > 1000;
 
     useEffect(() => {
-        setInProp(totalViewers > 1000);
+        setInProp(showViewers);
     });
 
     return (
@@ -36,17 +37,20 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
                 </div>
             </header>
             <main className="p-5 text-lg space-y-8">
-                <CSSTransition in={inProp} timeout={1000} classNames={"slide-y"}>
-                    <div className={classNames("mt-5 max-w-full overflow-hidden slide-y", styles.app__viewers_container)}>
+                {
+                    showViewers &&
+                    <CSSTransition in={inProp} timeout={200} classNames={"slide-y"}>
+                      <div className={classNames("mt-5 max-w-full overflow-hidden slide-y", styles.app__viewers_container)}>
                         <div className={classNames("max-w-sm h-full mx-auto default_border p-5 text-center")}>
-                            <span className="font-bold text-3xl block mt-1">total viewers</span>
-                            <span className="block text-5xl text-green-400 mt-6">{totalViewers}</span>
+                          <span className="font-bold text-3xl block mt-1">total viewers</span>
+                          <span className="block text-5xl text-green-400 mt-6">{totalViewers}</span>
                         </div>
-                    </div>
-                </CSSTransition>
+                      </div>
+                    </CSSTransition>
+                }
                 <section className="max-w-7xl w-full mx-auto">
                     <h1 className="heading">Informationen</h1>
-                    <ul className="list-disc pl-4">
+                    <ul className="pl-4">
                         <li>Der Server ist täglich von 15 Uhr bis 3 Uhr (morgens) online.</li>
                         <li>Andere Spieler zu töten ist nur mit Role-Play erlaubt, <b>außer</b> in den sog. KOS-Zonen.</li>
                         <li>Um mitspielen zu können, muss ein Streamer von einem der Teilnehmer eingeladen werden.</li>
@@ -55,6 +59,12 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
                         <li>Der Server wird monatlich zurückgesetzt (bedingt durch Updates).</li>
                     </ul>
                 </section>
+                {
+                    serverStatus === 'offline' &&
+                    <section className="max-w-7xl w-full mx-auto text-center">
+                        <p className="text-5xl text-red-400">Server ist offline!</p>
+                    </section>
+                }
                 <section>
                     <div className="max-w-7xl w-full mx-auto">
                         <h1 className="heading">Teams</h1>
@@ -78,7 +88,7 @@ const IndexPage: NextPage<FetchDataResponse> = (props) => {
             </main>
             <footer className="flex flex-col text-center px-4 py-2">
                 <span>Inoffizielle Seite.</span>
-                <a href="https://github.com/moritzruth/rustplatz">Source Code</a>
+                <a href="https://github.com/zlokomatic/rustplatz_react">Source Code</a>
             </footer>
         </>);
 };
