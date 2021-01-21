@@ -5,4 +5,7 @@ module.exports = {
       'static-cdn.jtvnw.net',
     ],
   },
+  experimental: {
+    optimizeFonts: true,
+  }
 }

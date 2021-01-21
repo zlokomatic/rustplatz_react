@@ -1,4 +1,4 @@
-import {ApiClient, HelixClip} from "twitch";
+import {ApiClient, HelixClip, HelixStream} from "twitch";
 import {ClientCredentialsAuthProvider} from "twitch-auth";
 import {ApiTeam, Team} from "../types/team";
 import {CustomStreamer, isSimpleStreamer} from "../types/streamer";
@@ -6,10 +6,15 @@ import {FetchDataResponse} from "../types/response";
 import cacheData from "memory-cache";
 import dayjs from 'dayjs'
 import {Clip} from "../types/clip";
+import {ServerStatus} from "../types/serverStatus";
 
 const RUST_GAME_ID = 263490
 
 const {TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, BATTLE_METRICS_TOKEN} = process.env
+
+if(!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET || !BATTLE_METRICS_TOKEN) {
+    throw new Error('Keys not set');
+}
 
 const BATTLE_METRICS_ENDPOINT = "https://api.battlemetrics.com/servers/9697587" +
     "?include=player&fields%5Bserver%5D=status&relations%5Bserver%5D=&fields%5Bplayer%5D=name&relations%5Bplayer%5D="
@@ -18,7 +23,7 @@ const twitchClient = new ApiClient({
     authProvider: new ClientCredentialsAuthProvider(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET)
 })
 
-let twitchUserIds = {};
+let twitchUserIds: {[key: string]: string} = {};
 
 async function getRustData() {
     const resp = await fetch(
@@ -26,7 +31,8 @@ async function getRustData() {
         {headers: {Authorization: `Bearer ${BATTLE_METRICS_TOKEN}`}}
     );
 
-    const data = await resp.json();
+
+    const data: ServerStatus = await resp.json();
 
     const serverStatus = data.data.attributes.status;
     const onlinePlayers = new Set(data.included.map(player => player.attributes.name));
@@ -80,13 +86,13 @@ export async function getClips(userName: string) {
         }) === index);
 }
 
-async function getActiveStreamsAndTotalViewers(channelNames) {
+async function getActiveStreamsAndTotalViewers(channelNames: string[]) {
     const rustStreamsIterator = await twitchClient.helix.streams.getStreamsPaginated({
         userName: channelNames,
         game: RUST_GAME_ID.toString()
     })
 
-    const rustStreams = []
+    const rustStreams: HelixStream[] = []
     for await (const stream of rustStreamsIterator) {
         rustStreams.push(stream)
     }
@@ -152,7 +158,7 @@ export async function fetchLiveData(): Promise<FetchDataResponse> {
     }
 }
 
-async function fetchLiveClipData(streamer) {
+async function fetchLiveClipData(streamer: string) {
     const clips = await getClips(streamer);
 
     return clips;
@@ -160,7 +166,7 @@ async function fetchLiveClipData(streamer) {
 
 export async function fetchData() {
     const key = 'FetchDataResponse';
-    const value = cacheData.get(key);
+    const value: FetchDataResponse | null = cacheData.get(key);
     if (value) {
         return value;
     }
@@ -170,7 +176,7 @@ export async function fetchData() {
     return data;
 }
 
-export async function fetchClipData(streamer) {
+export async function fetchClipData(streamer: string) {
     const key = `FetchClipDataResponse${streamer}`;
     const value = cacheData.get(key);
     if (value) {

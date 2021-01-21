@@ -11,7 +11,7 @@ type Props = {
 };
 
 const TeamMemberList: React.FunctionComponent<Props> = ({online, offline}) => {
-    const createTeamMember = (streamer) => <TeamMember streamer={streamer} key={`teammember-${streamer.displayed}`}/>;
+    const createTeamMember = (streamer: Streamer) => <TeamMember streamer={streamer} key={`teammember-${streamer.displayed}`}/>;
     const [showOnline, setShowOnline] = useState(true);
     const [showOffline, setShowOffline] = useState(true);
     const [last, setLast] = useState({

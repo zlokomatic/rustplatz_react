@@ -7,7 +7,7 @@ type Props = {
 
 const TeamMember: React.FunctionComponent<Props> = ({streamer}) => {
     return (
-        <span className={'flex space-x-1 group justify-between'}>
+        <span className={'flex space-x-1 justify-between'}>
         <a className="text-gray-200 flex space-x-1 group" href={`https://twitch.tv/${streamer.twitch}`} target="_blank" rel="noopener noreferrer">
             <span>{streamer.displayed}</span>
             <svg strokeWidth="4" className="w-3.5 h-3.5 fill-current opacity-0 transition-opacity duration-200 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

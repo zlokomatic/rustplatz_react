@@ -13,12 +13,18 @@ const TeamCard: React.FunctionComponent<Props> = ({team}) => {
     const showMultitwitch = onlineTwitchNames.length > 1;
 
     return (
-        <div className={classNames("default_border p-4 md:p-8 transition duration-500 ease-in-out transform-gpu relative hover:scale-103 hover:shadow-2xl", styles.teams_list__card)}>
-            <span className="text-2xl">{team.name}</span>
-            <a className={classNames("absolute bottom-2 right-2 opacity-0 transition-opacity duration-200", {'opacity-100': showMultitwitch})} href={`https://multitwitch.tv/${onlineTwitchNames.join('/')}`}>
-                Multitwitch
-            </a>
-            <TeamMemberList online={team.online} offline={team.offline} />
+        <div className={classNames("default_border p-4 transition duration-500 ease-in-out transform-gpu hover:scale-103 hover:shadow-2xl text-2xl space-y-8 md:space-y-2", styles.teams_list__card)}>
+            <span>{team.name}</span>
+            <TeamMemberList online={team.online} offline={team.offline}/>
+            {
+                showMultitwitch &&
+                <div className={"mt-2 text-center"}>
+                  <a className={classNames("opacity-0 transition-opacity duration-200", {'opacity-100': showMultitwitch})} href={`https://multitwitch.tv/${onlineTwitchNames.join('/')}`}>
+                    Multitwitch
+                  </a>
+                </div>
+            }
+
         </div>
     )
 };
