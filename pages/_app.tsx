@@ -11,7 +11,7 @@ function MyApp({Component, pageProps}: AppProps) {
         <>
             <Head>
                 <link rel="preconnect" href="https://fonts.gstatic.com"/>
-                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=block"/>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap"/>
                 <title>RUSTplatz</title>
                 <meta name="description" content={"Rust-Streamerserver von Bonjwa, RocketBeans und Dhalucard"} />
             </Head>
